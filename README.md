@@ -4,6 +4,8 @@ elm-geocoding
 Elm interface to Google Maps' geocoding library.
 Requires Google Maps API in global scope.
 
+![](https://raw.githubusercontent.com/smiley325/elm-geocoding/master/Demo.gif)
+
 Build and Run Test
 ------------------
 
