@@ -1,6 +1,6 @@
 { 
     "version": "0.1",
-    "summary": "Elm interface to Google Maps' geocoding library.",
+    "summary": "Elm interface to Google Maps geocoding library.",
     "description": "",
     "license": "MIT",
     "repository": "https://github.com/smiley325/elm-geocoding.git",

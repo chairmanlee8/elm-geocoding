@@ -14,12 +14,16 @@ import Geocoding
 aLocation : Input.Input String
 aLocation = Input.input ""
 
-view : Http.Response Geocoding.Geocode -> Html
+view : Geocoding.GeocodeResponse -> Html
 view resp =
     let resultStr = 
             case resp of 
-                Http.Success gc -> "Lat " ++ (show gc.geometry.location.lat) ++ ", Lng " ++ (show gc.geometry.location.lng)
-                Http.Waiting -> "Waiting"
+                Geocoding.Success gcs ->
+                    if (length gcs > 0)
+                        then let gc = head gcs in "Lat " ++ (show gc.geometry.location.lat) ++ ", Lng " ++ (show gc.geometry.location.lng)
+                        else "No results"
+
+                Geocoding.Waiting -> "Waiting"
                 _ -> "Error"
     in
         div
@@ -28,12 +32,12 @@ view resp =
             , div [] [ text resultStr ]
             ]
 
-scene : (Int, Int) -> Http.Response Geocoding.Geocode -> Element
+scene : (Int, Int) -> Geocoding.GeocodeResponse -> Element
 scene (w, h) gc = toElement w h (view gc)
 
 main : Signal Element
 main = scene <~ Window.dimensions
-              ~ Geocoding.byAddress (lift (\addr -> {address=addr}) (debounce (5 * second) aLocation.signal))
+              ~ Geocoding.byAddress (lift (\addr -> {address=addr}) (debounce (1 * second) aLocation.signal))
 
 -- Rate-limiter
 debounce : Time -> Signal a -> Signal a

@@ -1,10 +1,17 @@
 <html>
     <head>
         <title>elm-geocoding</title>
+
+        <link href="http://fonts.googleapis.com/css?family=Roboto:400italic,700italic,300,700,300italic,400" rel="stylesheet" type="text/css">
+        <link href="test.css" rel="stylesheet" type="text/css">
     </head>
 
     <body>
-        <div>
+        <div id="logo">
+            <img src="google-maps-logo.jpg" />
+        </div>
+
+        <div id="setup">
             <input id="gapi" type="text" placeholder="Enter Google API key" />
             <button type="button" onclick="javascript:setup();">Setup</button>
         </div>
@@ -15,6 +22,7 @@
         <script type="text/javascript">
             // This gets called once Google API is ready.
             function initialize () {
+                document.getElementById('setup').classList.add("hidden");
                 Elm.embed(Elm.Test, document.getElementById('elm'));
             }
 
