@@ -1,11 +1,11 @@
 <html>
     <head>
-        <title>elm-geocoding</title>
+        <title>elm-geocoding Example</title>
 
         <link href="http://fonts.googleapis.com/css?family=Roboto:400italic,700italic,300,700,300italic,400" rel="stylesheet" type="text/css">
         <link href="http://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet" type="text/css">
-        
-        <link href="test.css" rel="stylesheet" type="text/css">
+
+        <link href="example.css" rel="stylesheet" type="text/css">
     </head>
 
     <body>
@@ -20,12 +20,12 @@
 
         <div id="elm"></div>
 
-        <script type="text/javascript" src="test.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="example.js" charset="UTF-8"></script>
         <script type="text/javascript">
             // This gets called once Google API is ready.
             function initialize () {
                 document.getElementById('setup').classList.add("hidden");
-                Elm.embed(Elm.Test, document.getElementById('elm'));
+                Elm.embed(Elm.Example, document.getElementById('elm'));
             }
 
             function setup () {

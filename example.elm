@@ -1,4 +1,4 @@
-module Test where
+module Example where
 
 import Time (..)
 import Graphics.Input as Input
