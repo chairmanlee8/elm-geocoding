@@ -21,6 +21,10 @@ input[type='text']:focus {
     border-bottom: 2px solid #0091EA;
 }
 
+input[type='text'].error {
+    border-bottom: 2px solid #F44336;   
+}
+
 button[type='button'] {
     min-width: 88px;
     height: 36px;
@@ -59,4 +63,37 @@ input#gapi + button {
 
 #elm input {
     width: 100%;
+}
+
+#elm span.error {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: red;
+}
+
+#elm div.waiting {
+    width: 100%;
+    text-align: center;
+    padding-top: 24px;
+}
+
+#elm div.waiting::after {
+    content: url(gears.gif);
+}
+
+#elm ul.results {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin-top: 36px;
+}
+
+#elm ul.results li {
+    display: inline-block;
+    width: 148px;
+    height: 80px;
+    background-color: #666;
+    color: white;
+    margin: 1px;
 }

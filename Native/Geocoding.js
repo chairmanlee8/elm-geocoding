@@ -24,24 +24,33 @@ Elm.Native.Geocoding.make = function(elm) {
         }
     }
 
-    function makeGeocode (result) {
+    function makeLocation (x) { return {lat: x.lat(), lng: x.lng()}; }
+    function makeBounds (x) { return {northeast: makeLocation(x.getNorthEast()), southwest: makeLocation(x.getSouthWest())}; }
+
+    function makeGeometry (x) {
         return {
-            geometry: {
-                location: {
-                    lat: result.geometry.location.lat(),
-                    lng: result.geometry.location.lng()
-                },
-                viewport: {
-                    northeast: {
-                        lat: result.geometry.viewport.getNorthEast().lat(),
-                        lng: result.geometry.viewport.getNorthEast().lng()
-                    },
-                    southwest: {
-                        lat: result.geometry.viewport.getSouthWest().lat(),
-                        lng: result.geometry.viewport.getSouthWest().lng()
-                    }
-                }
-            }
+            location: makeLocation(x.location),
+            viewport: makeBounds(x.viewport),
+            bounds: x.bounds ? {ctor: 'Just', _0: makeBounds(x.bounds)} : {ctor: 'Nothing'}
+        }
+    }
+
+    function makeAddressComponent(x) {
+        return {
+            short_name: x.short_name,
+            long_name: x.long_name,
+            postcode_localities: Native$List.fromArray(x.postcode_localities || []),
+            types: Native$List.fromArray(x.types || [])
+        }
+    }
+
+    function makeGeocode (x) {
+        return {
+            types: Native$List.fromArray(x.types || []),
+            formatted_address: x.formatted_address || "",
+            address_components: Native$List.fromArray((x.address_components || []).map(makeAddressComponent)),
+            partial_match: x.partial_match || false,
+            geometry: makeGeometry(x.geometry)
         }
     }
 
@@ -85,7 +94,7 @@ Elm.Native.Geocoding.make = function(elm) {
     }
 
     function byAddress(requests) {
-        var responses = Signal.constant(Http.Waiting);
+        var responses = Signal.constant(elm.Geocoding.values.Waiting);
         var sender = A2( Signal.lift, registerReq([],responses), requests );
         function f(x) { return function(y) { return x; } }
         return A3( Signal.lift2, f, responses, sender );

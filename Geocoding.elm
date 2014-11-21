@@ -13,16 +13,28 @@ type Location = {lat : Float, lng : Float}
 type Bounds = {northeast : Location, southwest : Location}
 
 type Geometry = 
-    { location  : Location
-    , viewport  : Bounds
+    { location              : Location
+    , viewport              : Bounds
+    , bounds                : Maybe Bounds
+    }
+
+type Address =
+    { short_name            : String
+    , long_name             : String
+    , postcode_localities   : [String]
+    , types                 : [String]
     }
 
 type Geocode = 
-    { geometry  : Geometry
+    { types                 : [String]
+    , formatted_address     : String
+    , address_components    : [Address]
+    , geometry              : Geometry
+    , partial_match         : Bool
     }
 
 type GeocodeRequest =
-    { address   : String
+    { address       : String
     }
 
 data GeocodeResponse
@@ -36,6 +48,40 @@ data GeocoderStatus
     | OverQueryLimit
     | RequestDenied
     | InvalidRequest
+
+showStatus : GeocoderStatus -> String
+showStatus status =
+    case status of 
+        OK ->               "OK."
+        ZeroResults ->      "No results found."
+        OverQueryLimit ->   "Exceeded query limit."
+        RequestDenied ->    "Request denied."
+        InvalidRequest ->   "Invalid request."
+        _ ->                "Unknown error."
+
+showLatitude : Location -> String
+showLatitude location =
+    let ns = if (location.lat > 0) then "N " else "S "
+        d = location.lat
+        m = (d - toFloat (floor d)) * 60
+        s = (m - toFloat (floor m)) * 60
+    in
+        ns ++ show (floor d) ++ "° " ++ show (floor m) ++ "′ " ++ show (floor s) ++ "″"
+
+showLongitude : Location -> String
+showLongitude location =
+    let ns = if (location.lng > 0) then "E " else "W "
+        d = location.lng
+        m = (d - toFloat (floor d)) * 60
+        s = (m - toFloat (floor m)) * 60
+    in
+        ns ++ show (floor d) ++ "° " ++ show (floor m) ++ "′ " ++ show (floor s) ++ "″"
+
+isFailure : GeocodeResponse -> Bool
+isFailure gr = 
+    case gr of
+        Failure _ -> True
+        _ -> False
 
 byAddress : Signal GeocodeRequest -> Signal GeocodeResponse
 byAddress = Native.Geocoding.byAddress
