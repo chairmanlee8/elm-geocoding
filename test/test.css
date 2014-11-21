@@ -90,10 +90,36 @@ input#gapi + button {
 }
 
 #elm ul.results li {
+    position: relative;
     display: inline-block;
+    margin: 1px;
     width: 148px;
     height: 80px;
-    background-color: #666;
+    background-color: #EEEEEE;
+    cursor: pointer;
+    transition: width 0.3s, height 0.3s;
+}
+
+#elm ul.results li div.coords {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 8px;
+    color: #212121;
+    font-family: "Inconsolata", monospace;
+}
+
+#elm ul.results li.expanded {
+    width: 598px;
+    height: 160px;
+}
+
+#elm ul.results li.expanded img {
+    width: 100%;
+    height: 100%;
+}
+
+#elm ul.results li.expanded div.coords {
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    margin: 1px;
 }

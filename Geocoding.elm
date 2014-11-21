@@ -8,6 +8,7 @@ import Native.Geocoding
 
 -- Geocoding API v3
 -- https://developers.google.com/maps/documentation/geocoding/
+-- https://developers.google.com/maps/documentation/javascript/geocoding
 
 type Location = {lat : Float, lng : Float}
 type Bounds = {northeast : Location, southwest : Location}
@@ -62,7 +63,7 @@ showStatus status =
 showLatitude : Location -> String
 showLatitude location =
     let ns = if (location.lat > 0) then "N " else "S "
-        d = location.lat
+        d = abs location.lat
         m = (d - toFloat (floor d)) * 60
         s = (m - toFloat (floor m)) * 60
     in
@@ -71,7 +72,7 @@ showLatitude location =
 showLongitude : Location -> String
 showLongitude location =
     let ns = if (location.lng > 0) then "E " else "W "
-        d = location.lng
+        d = abs location.lng
         m = (d - toFloat (floor d)) * 60
         s = (m - toFloat (floor m)) * 60
     in
@@ -87,26 +88,22 @@ byAddress : Signal GeocodeRequest -> Signal GeocodeResponse
 byAddress = Native.Geocoding.byAddress
 
 -- Display Maps
+-- https://developers.google.com/maps/documentation/staticmaps/
 
 -- Turn lat/long coords + zoom into embedded Google Map link
---mapUrl : String -> Float -> Float -> Int -> String
---mapUrl apiKey lat lng zoom = 
---    "https://www.google.com/maps/embed/v1/view?key=" ++ apiKey ++ "&center=" ++ (show lat) ++ "," ++ (show lng) ++ "&zoom=" ++ (show zoom)
-
---mapHtml : String -> Float -> Float -> Int -> Html
---mapHtml apiKey lat lng zoom =
---    iframe []
+mapUrl : Location -> Int -> (Int, Int) -> String
+mapUrl coords zoom (width, height) = 
+    "https://maps.googleapis.com/maps/api/staticmap?" 
+        ++ "center=" ++ (show coords.lat) ++ "," ++ (show coords.lng) ++ "&"
+        ++ "zoom=" ++ (show zoom) ++ "&"
+        ++ "size=" ++ (show width) ++ "x" ++ (show height)
 
 -- Calculate zoom from map bounds and desired pixel width
---calcZoom : [Float] -> Int -> Int
---calcZoom bounds displayWidth =
---    case bounds of 
---        _::l::_::r::[] ->
---            let globeWidth = 256.0  -- a constant in Google Maps' projection
---                angle = r - l
---                adjAngle = if (angle < 0) then (angle + 360) else angle
---            in
---                round (logBase 2 ((toFloat displayWidth) * 360 / angle / globeWidth))
-
---        _ -> 10
+calcZoom : Bounds -> Int -> Int
+calcZoom viewport displayWidth =
+    let globeWidth = 256.0  -- a constant in Google Maps' projection
+        angle = viewport.northeast.lng - viewport.southwest.lng
+        adjAngle = if (angle < 0) then (angle + 360) else angle
+    in
+        round (logBase 2 ((toFloat displayWidth) * 360 / angle / globeWidth))
 
