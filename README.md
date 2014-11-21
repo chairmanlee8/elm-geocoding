@@ -11,4 +11,4 @@ To build the test harness, run `elm-get install` followed by `make.sh`. Change i
 
 The test will require that you input a Google API key, which can be acquired from the Google Developer Center. Make sure to set your allowed referers, otherwise Google Maps API will complain.
 
-![](https://github.com/smiley325/elm-geocoding/blob/master/API Key.png)
+![](https://raw.githubusercontent.com/smiley325/elm-geocoding/master/API%20Key.PNG)
