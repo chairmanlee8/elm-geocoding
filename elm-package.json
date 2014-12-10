@@ -1,15 +1,16 @@
-{ 
-    "version": "0.1",
+{
+    "version": "0.1.0",
     "summary": "Elm interface to Google Maps geocoding and static maps library.",
     "description": "Elm interface to Google Maps geocoding and static maps library. This allows you to: embed static maps, look up locations by address (geocoding); usingthe Google Maps JavaScript v3 API.",
-    
-    "license": "MIT",
     "repository": "https://github.com/smiley325/elm-geocoding.git",
+    "license": "BSD3",
+    "source-directories": [
+        "."
+    ],
     "exposed-modules": ["Geocoding"],
-    "native-modules": ["Native.Geocoding"],
-    "elm-version": "0.13",
+    "native-modules": true,
     "dependencies": {
-        // Uncomment this before running make.sh
-        // "evancz/elm-html": "0.3"
+        "elm-lang/core": "1.0.0 <= v < 2.0.0",
+        "evancz/elm-html": "1.0.0 <= v < 2.0.0"
     }
 }

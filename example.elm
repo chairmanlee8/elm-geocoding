@@ -1,28 +1,30 @@
 module Example where
 
+import List
+import Signal
+import Signal (..)
 import Time (..)
-import Graphics.Input as Input
+import Graphics.Element (Element)
 import Html (..)
 import Html.Attributes (..)
 import Html.Events (..)
-import Html.Tags (..)
 import Http
 import Window
 
 import Geocoding
 import Geocoding (showLongitude, showLatitude)
 
-aLocation : Input.Input String
-aLocation = Input.input ""
+aLocation : Signal.Channel String
+aLocation = Signal.channel ""
 
-aExpandIndex : Input.Input Int
-aExpandIndex = Input.input -1
+aExpandIndex : Signal.Channel Int
+aExpandIndex = Signal.channel -1
 
 viewResult : Bool -> Int -> Geocoding.Geocode -> Html
 viewResult expand index gc =
     li 
         [ class (if expand then "expanded" else "")
-        , on "click" getAnything aExpandIndex.handle (\_ -> index)
+        , onClick (Signal.send aExpandIndex index)
         ] 
         [ div
             [ class "coords" ]
@@ -35,11 +37,11 @@ viewResult expand index gc =
             []
         ]
 
-viewResults : Int -> [Geocoding.Geocode] -> Html
+viewResults : Int -> List Geocoding.Geocode -> Html
 viewResults expandIndex gcs = 
     ul 
         [ class "results" ] 
-        (map (\(index, gc) -> viewResult (index==expandIndex) index gc) (zip [1..length gcs] gcs))
+        (List.map (\(index, gc) -> viewResult (index==expandIndex) index gc) (List.map2 (,) [1..List.length gcs] gcs))
 
 view : Int -> Geocoding.GeocodeResponse -> Html
 view expandIndex resp =
@@ -55,7 +57,7 @@ view expandIndex resp =
                 [ class (if (Geocoding.isFailure resp) then "error" else "")
                 , type' "text"
                 , placeholder "Enter address or location..."
-                , on "keyup" getValue aLocation.handle identity 
+                , on "keyup" targetValue (Signal.send aLocation)
                 ] 
                 []
             , resultHtml
@@ -66,9 +68,9 @@ scene (w, h) expandIndex gc = toElement w h (view expandIndex gc)
 
 main : Signal Element
 main = scene <~ Window.dimensions
-              ~ aExpandIndex.signal
-              ~ merge (Geocoding.byAddress (lift (\addr -> {address=addr}) (debounce (1 * second) aLocation.signal)))
-                      (sampleOn (dropRepeats aLocation.signal) (constant Geocoding.Waiting))
+              ~ subscribe aExpandIndex
+              ~ merge (Geocoding.byAddress (Signal.map (\addr -> {address=addr}) (debounce (1 * second) (subscribe aLocation))))
+                      (sampleOn (dropRepeats (subscribe aLocation)) (constant Geocoding.Waiting))
 
 -- Rate-limiter
 debounce : Time -> Signal a -> Signal a

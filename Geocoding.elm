@@ -19,7 +19,6 @@ The use of this library requires that the Google Maps JavaScript is embedded on 
 
 import String
 import Dict
-import Json
 import Http
 import Native.Geocoding
 
@@ -27,40 +26,40 @@ import Native.Geocoding
 -- https://developers.google.com/maps/documentation/geocoding/
 -- https://developers.google.com/maps/documentation/javascript/geocoding
 
-type Location = {lat : Float, lng : Float}
-type Bounds = {northeast : Location, southwest : Location}
+type alias Location = {lat : Float, lng : Float}
+type alias Bounds = {northeast : Location, southwest : Location}
 
-type Geometry = 
+type alias Geometry = 
     { location              : Location
     , viewport              : Bounds
     , bounds                : Maybe Bounds
     }
 
-type Address =
+type alias Address =
     { short_name            : String
     , long_name             : String
-    , postcode_localities   : [String]
-    , types                 : [String]
+    , postcode_localities   : List String
+    , types                 : List String
     }
 
-type Geocode = 
-    { types                 : [String]
+type alias Geocode = 
+    { types                 : List String
     , formatted_address     : String
-    , address_components    : [Address]
+    , address_components    : List Address
     , geometry              : Geometry
     , partial_match         : Bool
     }
 
-type GeocodeRequest =
+type alias GeocodeRequest =
     { address       : String
     }
 
-data GeocodeResponse
-    = Success [Geocode]
+type GeocodeResponse
+    = Success (List Geocode)
     | Waiting 
     | Failure GeocoderStatus
 
-data GeocoderStatus
+type GeocoderStatus
     = OK
     | ZeroResults
     | OverQueryLimit
@@ -92,7 +91,7 @@ showLatitude location =
         m = (d - toFloat (floor d)) * 60
         s = (m - toFloat (floor m)) * 60
     in
-        ns ++ show (floor d) ++ "° " ++ show (floor m) ++ "′ " ++ show (floor s) ++ "″"
+        ns ++ toString (floor d) ++ "° " ++ toString (floor m) ++ "′ " ++ toString (floor s) ++ "″"
 
 {-| Convert a location's longitude into a human-readable string.
 
@@ -105,7 +104,7 @@ showLongitude location =
         m = (d - toFloat (floor d)) * 60
         s = (m - toFloat (floor m)) * 60
     in
-        ns ++ show (floor d) ++ "° " ++ show (floor m) ++ "′ " ++ show (floor s) ++ "″"
+        ns ++ toString (floor d) ++ "° " ++ toString (floor m) ++ "′ " ++ toString (floor s) ++ "″"
 
 {-| Check if a GeocodeResponse was a failure or not. 
     
@@ -134,9 +133,9 @@ byAddress = Native.Geocoding.byAddress
 mapUrl : Location -> Int -> (Int, Int) -> String
 mapUrl coords zoom (width, height) = 
     "https://maps.googleapis.com/maps/api/staticmap?" 
-        ++ "center=" ++ (show coords.lat) ++ "," ++ (show coords.lng) ++ "&"
-        ++ "zoom=" ++ (show zoom) ++ "&"
-        ++ "size=" ++ (show width) ++ "x" ++ (show height)
+        ++ "center=" ++ (toString coords.lat) ++ "," ++ (toString coords.lng) ++ "&"
+        ++ "zoom=" ++ (toString zoom) ++ "&"
+        ++ "size=" ++ (toString width) ++ "x" ++ (toString height)
 
 {-| Calculate the zoom factor from viewport bounds. This is helpful when deciding what zoom to pass to mapUrl, when you have a Geocode from byAddress. The canonical usage is as follows. Notice how the width is repeated twice.
 
