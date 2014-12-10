@@ -82,7 +82,7 @@ showStatus status =
 
 {-| Convert a location's latitude into a human-readable string.
 
-    showLatitude {lat: 60.5, lng: -30.3} == "N 60° 30′ 0″"
+    showLatitude {lat: 60.5, lng: -30.3} == "N 60 30 0"
 -}
 showLatitude : Location -> String
 showLatitude location =
@@ -95,7 +95,7 @@ showLatitude location =
 
 {-| Convert a location's longitude into a human-readable string.
 
-    showLongitude {lat: 60.5, lng: -30.3} == "W 30° 18′ 0″"
+    showLongitude {lat: 60.5, lng: -30.3} == "W 30 18 0"
 -}
 showLongitude : Location -> String
 showLongitude location =
